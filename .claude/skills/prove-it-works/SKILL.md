@@ -47,7 +47,9 @@ Experimentation is the judge; you drive the CLI; a human holds the keys.
 Ask, then wait:
 1. **What changes?** Find the component/file that renders it.
 2. **What counts as success?** Find where it happens in code. That is the conversion event.
-3. Check the SDK can send events (versions in `references/instrumentation.md`). If not, say so and stop.
+3. **Which Flagsmith SDK?** None yet: plan to add one in step 4. Too old to send events: plan the
+   upgrade. A stack with no events-capable SDK (table in `references/instrumentation.md`): say so, stop.
+4. **Who is the user?** Find the identifier the app already has (user id, or a stored anonymous id).
 
 Propose: flag name (snake_case), control value, each variant `key=value` (keys short, lowercase;
 `control` is reserved), event name (case-sensitive, exactly what the code will send), rollout %
@@ -68,7 +70,8 @@ variants are project-wide; the metric and experiment belong to this environment.
 
 ### 4. Instrument the code — GATE (show the diff plan first)
 Follow `references/instrumentation.md` for the app's SDK. Three edits, nothing more:
-- init with events enabled, using the environment key the app already uses for flags;
+- init with events enabled, using the environment key the app already uses for flags (none yet:
+  the client-side `environment.key` from preflight);
 - identify the user, then call the **experiment flag** API where the variation is actually seen
   (that call records the exposure) and render by its `value`;
 - track the conversion event where success happens; flush before exit/navigation.
