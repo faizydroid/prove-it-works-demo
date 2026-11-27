@@ -70,6 +70,10 @@ if ! flagsmith feature get "$FLAG" --json >/dev/null 2>&1; then
   fs feature create "$FLAG" --value "$CONTROL" --enabled --description "A/B test: $NAME" >/dev/null
 fi
 FEATURE_ID=$(fsq '.id' feature get "$FLAG")
+if [[ $REUSED_FLAG == true && $(apiq '.is_archived' "api/v1/projects/$PROJECT_ID/features/$FEATURE_ID/") == true ]]; then
+  fail "Flag '$FLAG' already exists but is archived (an earlier experiment retired it)." \
+    "Pick a new flag name. Reusing it would revive the old flag; only do that if the human asks: flagsmith feature update $FLAG --unarchive"
+fi
 
 # ---- 2. variants (every one keyed; an unkeyed variant records no exposures) ----------------------
 for v in "${VARIANTS[@]}"; do

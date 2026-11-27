@@ -10,6 +10,8 @@
 def r3: (. * 1000 | round) / 1000;
 def r4: (. * 10000 | round) / 10000;
 def pct: (. * 100 | round);
+# Chance to win with one decimal, never shown as a certainty: 0.995 -> 99.5, 0.9996 -> 99.9.
+def chance: ((. * 1000 | round) / 10) | if . >= 100 then 99.9 elif . <= 0 then 0.1 else . end;
 def signed: if . >= 0 then "+\(.)" else "\(.)" end;
 
 # Chi-squared survival function for integer degrees of freedom; same recurrence as Flagsmith's stats.py.
@@ -98,7 +100,7 @@ def guardrail($meta):
           elif $verdict == "collecting" then
             "Collecting data: every variant needs 50+ identities and 5+ conversions. So far: \($variants | to_entries | map("\(.key) \(.value.n) seen/\(.value.conversions) converted") | join(", "))."
           else
-            "\($best.key): \($best.value.chance_to_win | pct)% chance to beat control (\($best.value.lift | pct | signed)% lift, 95% CI \($best.value.ci[0] | pct | signed)%..\($best.value.ci[1] | pct | signed)%)"
+            "\($best.key): \($best.value.chance_to_win | chance)% chance to beat control (\($best.value.lift | pct | signed)% lift, 95% CI \($best.value.ci[0] | pct | signed)%..\($best.value.ci[1] | pct | signed)%)"
             + (if $verdict == "guardrail" then ", but it hurt guardrail(s): \($harmed | map(.name) | join(", ")). Don't ship without the human's explicit override." else "" end)
           end ) }
   end

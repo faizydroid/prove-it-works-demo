@@ -22,6 +22,25 @@ A browser app loaded without a bundler can import the SDK as an ES module:
 Self-hosted: also pass the API URL (`https://host/api/v1/`) and the events URL. If events go to the
 Flagsmith API itself (no separate ingestion service), the events URL is the API URL ending in `/api/`.
 
+## 0. Fail open
+
+The experiment must never take the feature down. If the SDK can't load or Flagsmith can't be
+reached, render control and carry on. In a browser:
+
+```js
+let flagsmith = null, variant = 'control';
+try {
+  const { default: sdk } = await import('https://cdn.jsdelivr.net/npm/@flagsmith/flagsmith@12.6.0/index.mjs');
+  await sdk.init({ environmentID: KEY, identity: userId, enableEvents: true });
+  flagsmith = sdk;
+  variant = flagsmith.getExperimentFlag('<flag>')?.value ?? 'control';
+} catch (e) { console.warn('Flagsmith unavailable, serving control', e); }
+// on the conversion: if (flagsmith) { flagsmith.trackEvent('<event>'); }  // then do the action regardless
+```
+
+Server SDKs: catch errors from the flag call and use the default value; never await event
+flushing on the request path.
+
 ## 1. Initialise with events on
 
 ```js

@@ -20,6 +20,9 @@ Experimentation is the judge; you drive the CLI; a human holds the keys.
 - `"ok":false` → stop, show the human `error` (and `hint`) verbatim. Don't guess or work around it.
 - **GATE** steps change what users see or what the project contains. Before each, say exactly what
   will change, **in which environment** (name it), and wait for an explicit yes. No yes, no action.
+  One exception: in a non-production environment, steps 3–6 that the human already asked for in
+  so many words ("set it up and simulate traffic") count as approved; say what you're doing as you
+  go. Steps 8 and 9 always wait for a fresh yes, and production-like environments get no exceptions.
 - **Production.** Write scripts refuse a production-like environment (Production, prod, live, prd)
   unless you pass `--confirm-env "<exact name>"`, and refuse any write if that name differs from
   the environment they resolved. Pass it only after the human approved that environment by name,
@@ -75,13 +78,16 @@ Follow `references/instrumentation.md` for the app's SDK. Three edits, nothing m
 - identify the user, then call the **experiment flag** API where the variation is actually seen
   (that call records the exposure) and render by its `value`;
 - track the conversion event where success happens; flush before exit/navigation.
-Same identifier for flags and events or exposures and conversions can't be joined. Client-side
-keys are public by design; server-side (`ser.`) and admin keys never go in git.
+Same identifier for flags and events or exposures and conversions can't be joined. If Flagsmith
+or the SDK can't load, the app must still work and serve control: wrap the import/init in
+try/catch, and never let event tracking block the user's action. Client-side keys are public by
+design; server-side (`ser.`) and admin keys never go in git.
 
 Ship it: `git switch -c exp/<flag>`, commit, `git push -u origin exp/<flag>`, then
 `gh pr create --title "Experiment <flag>: <one line>" --body "<hypothesis>. Experiment: <dashboard>"`
-(or the repo's usual flow). The experiment measures deployed code, so step 5 waits until the human
-says it's merged and live.
+(or the repo's usual flow). For real traffic, step 5 waits until the human says the code is merged
+and deployed: the experiment measures deployed code. Simulated traffic in a non-production
+environment doesn't run the app, so there you may start straight away.
 
 ### 5. Start — GATE
 `bash scripts/start-experiment.sh --id <experiment_id> [--rollout 100] [--confirm-env "<name>"]`
