@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Acme Notes · Pricing</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main>
+    <header>
+      <span class="logo">Acme Notes</span>
+      <nav><a href="#">Product</a><a href="#" aria-current="page">Pricing</a><a href="#">Docs</a></nav>
+    </header>
+
+    <section class="intro">
+      <h1>Simple pricing for teams that write things down</h1>
+      <p>Start free for 14 days. No card needed until you pick a plan.</p>
+    </section>
+
+    <div class="billing" role="radiogroup" aria-label="Billing period">
+      <button type="button" data-billing="monthly" role="radio">Monthly</button>
+      <button type="button" data-billing="annual" role="radio">Annual <span class="save">save 20%</span></button>
+    </div>
+
+    <section class="plans">
+      <article class="plan" data-plan="starter">
+        <h2>Starter</h2>
+        <p class="price"><span class="amount"></span><span class="per">/ user / month</span></p>
+        <p class="billed"></p>
+        <ul><li>Unlimited notes</li><li>3 shared spaces</li><li>Email support</li></ul>
+        <button type="button" class="checkout" data-plan="starter">Start checkout</button>
+      </article>
+      <article class="plan featured" data-plan="pro">
+        <h2>Pro</h2>
+        <p class="price"><span class="amount"></span><span class="per">/ user / month</span></p>
+        <p class="billed"></p>
+        <ul><li>Everything in Starter</li><li>Unlimited spaces</li><li>Version history</li><li>Priority support</li></ul>
+        <button type="button" class="checkout" data-plan="pro">Start checkout</button>
+      </article>
+    </section>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

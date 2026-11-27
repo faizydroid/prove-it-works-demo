@@ -1,0 +1,9 @@
+{
+  "name": "prove-it-works-scripts",
+  "private": true,
+  "description": "Dependency for simulate-traffic.mjs only. The bash scripts need nothing but the Flagsmith CLI.",
+  "type": "module",
+  "dependencies": {
+    "@flagsmith/flagsmith": "^12.6.0"
+  }
+}

@@ -1,0 +1,3 @@
+node_modules/
+.prove-it-works/
+.claude/settings.local.json
